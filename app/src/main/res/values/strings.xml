@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Grocery Notifier</string>
+    <string name="title_profile">My Profile</string>
+    <string name="title_shopping_list">My Shopping List</string>
+    <string name="title_products">My products</string>
+    <string name="title_add_product">Add Product</string>
+</resources>
