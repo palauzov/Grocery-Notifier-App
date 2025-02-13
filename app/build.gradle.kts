@@ -36,6 +36,10 @@ android {
 
 dependencies {
 
+    implementation("androidx.room:room-runtime:2.5.0")
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
+    implementation("com.sun.mail:android-mail:1.6.7")
+    implementation("com.sun.mail:android-activation:1.6.7")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
