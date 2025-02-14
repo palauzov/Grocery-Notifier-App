@@ -10,18 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.grocerynotifier.databinding.FragmentNotificationsBinding;
+import com.example.grocerynotifier.databinding.ShoppingListBinding;
 
 public class ShoppingListFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private ShoppingListBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         ShoppingListViewModel shoppingListViewModel =
                 new ViewModelProvider(this).get(ShoppingListViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = ShoppingListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textNotifications;
