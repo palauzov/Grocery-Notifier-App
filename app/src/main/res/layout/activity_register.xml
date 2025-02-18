@@ -11,7 +11,10 @@
         android:layout_width="96dp"
         android:layout_height="36dp"
         android:text="Register"
-        android:textSize="20sp"
+        android:textSize="22sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,8 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="Name"
         android:inputType="textEmailAddress"
+        android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -32,8 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="Email"
         android:inputType="textEmailAddress"
+        android:text="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
@@ -68,6 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordHint" />
+
     <TextView
         android:id="@+id/confirmPasswordHint"
         android:layout_width="wrap_content"
@@ -84,7 +88,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="phone"
-        android:text="Phone"
+        android:text="Phone Number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,8 +99,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="31/01/2024"
         android:inputType="date"
+        android:text="31/01/2024"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
@@ -110,14 +114,15 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/editTextDate"
         app:layout_constraintTop_toBottomOf="@+id/editTextDate" />
+
     <RadioGroup
         android:id="@+id/genderRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDate"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textViewDate">
 
         <RadioButton
             android:id="@+id/radioMale"
@@ -132,6 +137,99 @@
             android:text="Female" />
     </RadioGroup>
 
+    <RadioGroup
+        android:id="@+id/radioGroupAcc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup">
+
+        <RadioButton
+            android:id="@+id/radioOptionSingleAcc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Single Account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup" />
+
+        <RadioButton
+            android:id="@+id/radioOptionRoommateAcc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Roommate Account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioOptionSingleAcc" />
+
+        <RadioButton
+            android:id="@+id/radioOptionFamilyAcc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioOptionRoommateAcc" />
+
+        <RadioButton
+            android:id="@+id/radioOptionJoinFamilyAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Join an existing Roommate/Family Account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioOptionFamilyAcc" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textViewTerms"
+        android:layout_width="110dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Already have an account? Log in."
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRegister"
+        app:layout_constraintEnd_toStartOf="@+id/buttonRegister"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxTermsAndCond" />
+
+    <CheckBox
+        android:id="@+id/checkBoxTermsAndCond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terms and conditions"
+        app:layout_constraintStart_toStartOf="@+id/radioGroupAcc"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupAcc" />
+    <TextView
+        android:id="@+id/textViewLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Privacy Policy"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toEndOf="@+id/buttonRegister"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRegister"
+        android:layout_marginStart="16dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
