@@ -10,22 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.grocerynotifier.databinding.FragmentDashboardBinding;
+import com.example.grocerynotifier.databinding.AddProductBinding;
 
 public class AddProductFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private AddProductBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         AddProductViewModel addProductViewModel =
                 new ViewModelProvider(this).get(AddProductViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = AddProductBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        addProductViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

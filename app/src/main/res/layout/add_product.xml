@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.addProduct.AddProductFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Background Image -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Background Image"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/products_background" />
+
+        <!-- Text Fields Container -->
+        <LinearLayout
+            android:id="@+id/fieldsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp"> <!-- Centers the fields -->
+
+            <!-- First Text Field -->
+            <EditText
+                android:id="@+id/productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_background"
+                android:hint="Name"
+                android:padding="15dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <!-- Second Text Field -->
+            <EditText
+                android:id="@+id/expirationDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_background"
+                android:hint="31/01/2025"
+                android:padding="15dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <!-- Third Text Field -->
+            <EditText
+                android:id="@+id/weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_background"
+                android:hint="Weight (not required)"
+                android:inputType="number"
+                android:padding="15dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <!-- Fourth Text Field -->
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_background"
+                android:hint="Price (not required)"
+                android:inputType="number"
+                android:padding="15dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Blue Button - Add Product -->
+        <Button
+            android:id="@+id/btnAddProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fieldsContainer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#007BFF"
+            android:padding="15dp"
+            android:text="Add Product"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

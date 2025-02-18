@@ -9,19 +9,19 @@
         android:id="@+id/navigation_clients_list"
         android:name="com.example.grocerynotifier.ui.products.ProductsFragment"
         android:label="@string/title_products"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/my_products" />
 
     <fragment
         android:id="@+id/navigation_add_product"
         android:name="com.example.grocerynotifier.ui.addProduct.AddProductFragment"
         android:label="@string/title_add_product"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/add_product" />
 
     <fragment
         android:id="@+id/navigation_shopping_list"
         android:name="com.example.grocerynotifier.ui.shoppingList.ShoppingListFragment"
         android:label="@string/title_shopping_list"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/shopping_list" />
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.grocerynotifier.ui.profile.ProfileFragment"
