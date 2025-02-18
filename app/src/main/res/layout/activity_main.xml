@@ -37,10 +37,15 @@
         android:layout_height="0dp"
         android:layout_margin="16dp"
         android:src="@android:drawable/ic_menu_camera"
-        app:backgroundTint="@android:color/holo_red_light"
+        app:backgroundTint="@color/cool_blue"
         app:layout_anchorGravity="bottom|end"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:elevation="8dp"
+        app:pressedTranslationZ="6dp"
+        app:borderWidth="2dp"
+        app:borderColor="@color/white"
+        app:fabSize="normal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
