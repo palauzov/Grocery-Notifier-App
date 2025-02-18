@@ -1,9 +1,12 @@
-package com.example.grocerynotifier;
+package com.example.grocerynotifier.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.grocerynotifier.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,19 +26,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
+        if (isFirstRun){
+            sharedPreferences.edit().putBoolean("isFirstRun", false).apply();
+            startActivity(new Intent(this, RegisterActivity.class));
+        }else {
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+
+            loadBottomNavigation();
+            loadFloatingCameraButton();
+        }
+
+        finish();
+    }
+
+    private void loadBottomNavigation(){
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_clients_list, R.id.navigation_add_product, R.id.navigation_shopping_list, R.id.navigation_profile)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
 
+    private void loadFloatingCameraButton(){
         FloatingActionButton fab = findViewById(R.id.fab_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

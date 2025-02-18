@@ -25,17 +25,27 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         viewBinding = true
+    }
+
+    packaging {
+        resources {
+            excludes.add("/META-INF/NOTICE.md")
+            excludes.add("/META-INF/LICENSE.md")
+            excludes.add("/META-INF/LICENSE")
+        }
     }
 }
 
 dependencies {
-
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.room:room-runtime:2.5.0")
     annotationProcessor("androidx.room:room-compiler:2.5.0")
     implementation("com.sun.mail:android-mail:1.6.7")

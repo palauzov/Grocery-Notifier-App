@@ -45,7 +45,6 @@
         app:elevation="8dp"
         app:pressedTranslationZ="6dp"
         app:borderWidth="2dp"
-        app:borderColor="@color/white"
         app:fabSize="normal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
