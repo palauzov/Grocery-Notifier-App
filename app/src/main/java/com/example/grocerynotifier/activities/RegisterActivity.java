@@ -53,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         String name = editTextName.getText().toString();
         String phone = editTextPhone.getText().toString();
 
+
         if (email.isEmpty() || password.isEmpty() || name.isEmpty() || phone.isEmpty()) {
             Toast.makeText(RegisterActivity.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
             return;
