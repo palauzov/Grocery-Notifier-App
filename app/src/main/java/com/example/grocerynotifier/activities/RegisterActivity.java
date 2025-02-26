@@ -14,15 +14,17 @@ import androidx.room.Room;
 
 import com.example.grocerynotifier.R;
 import com.example.grocerynotifier.converters.DateFormatter;
+import com.example.grocerynotifier.converters.ValidatorUtils;
 import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.daos.UserDao;
 import com.example.grocerynotifier.model.Account;
 import com.example.grocerynotifier.model.User;
 
-import java.time.LocalDate;
+import java.util.Date;
+
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText editTextEmail, editTextPassword, editTextName, editTextPhone;
+    private EditText editTextEmail, editTextPassword, editTextName, editTextPhone, editTextDate, editTextConfPass;
     private Button btnRegister;
 
     private AppDatabase db;
@@ -36,49 +38,60 @@ public class RegisterActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextTextPassword);
+        editTextConfPass = findViewById(R.id.editTextTextConfirmPassword);
         editTextName = findViewById(R.id.editTextName);
         editTextPhone = findViewById(R.id.editTextPhone);
+        editTextDate = findViewById(R.id.editTextDate);
         btnRegister = findViewById(R.id.buttonRegister);
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "users").build();
         userDao = db.userDao();
 
-        btnRegister.setOnClickListener(v -> registerUser());
+        btnRegister.setOnClickListener(this::registerUser);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void registerUser() {
-        String email = editTextEmail.getText().toString();
-        String password = editTextPassword.getText().toString();
-        String name = editTextName.getText().toString();
-        String phone = editTextPhone.getText().toString();
+    private void registerUser(View view) {
+        try {
+            String email = ValidatorUtils.validateEmail(editTextEmail.getText().toString(), userDao);
+            String name = editTextName.getText().toString().trim();
+            String confirmPass = editTextConfPass.getText().toString();
+            String password = ValidatorUtils.validateConfirmPassword(
+                    ValidatorUtils.validatePassword(editTextPassword.getText().toString()),
+                    confirmPass
+            );
+            String phone = ValidatorUtils.validatePhone(editTextPhone.getText().toString());
+            String birthDateStr = ValidatorUtils.validateDate(editTextDate.getText().toString());
+            Date birthDate = DateFormatter.toDate(birthDateStr);
 
+            if (email.isEmpty() || password.isEmpty() || name.isEmpty() || phone.isEmpty() || birthDateStr.isEmpty()) {
+                showToast("All fields must be filled");
+                return;
+            }
 
-        if (email.isEmpty() || password.isEmpty() || name.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(RegisterActivity.this, "All fields must be filled", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            Account account = new Account();
+            User user = new User(email, account, birthDate, phone, "token", password, name);
 
-        Account account = new Account();
-        User user = new User(email, account, DateFormatter.toDate("31-12-2004"), phone, "token", password, name);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+            new Thread(() -> {
                 try {
                     userDao.insert(user);
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                } catch (Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(RegisterActivity.this, "Error registering user.", Toast.LENGTH_SHORT).show();
-                        }
+                    runOnUiThread(() -> {
+                        showToast("Registration successful!");
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
                     });
+                } catch (Exception e) {
+                    runOnUiThread(() -> showToast("Error registering user. Email might already exist."));
                 }
-            }
-        }).start();
+            }).start();
+
+        } catch (IllegalArgumentException e) {
+            showToast(e.getMessage());
+        }
     }
+    private void showToast(String message) {
+        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
 }

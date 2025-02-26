@@ -66,8 +66,7 @@
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date of Birth (31-12-2024)"
-            android:inputType="date" />
+            android:hint="Date of Birth (31-12-2024)" />
 
         <RadioGroup
             android:id="@+id/genderRadioGroup"
@@ -143,7 +142,7 @@
 
             <TextView
                 android:id="@+id/textViewTermsLink"
-                android:layout_width="263dp"
+                android:layout_width="162dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
@@ -155,6 +154,7 @@
             android:id="@+id/buttonRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="registerUser"
             android:text="Register" />
 
         <TextView
