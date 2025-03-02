@@ -22,6 +22,8 @@ public class User {
    private String name;
    @NotNull
    private String password;
+   @NotNull
+   private String gender;
    private String resetPasswordToken;
    @NotNull
    private String phone;
@@ -30,10 +32,11 @@ public class User {
    @NotNull
    private Account account;
 
-   public User(String email, Account account, Date dateOfBirth, String phone, String resetPasswordToken, String password, String name) {
+   public User(String email, Account account, Date dateOfBirth, String phone,String gender, String resetPasswordToken, String password, String name) {
       this.email = email;
       this.account = account;
       this.dateOfBirth = dateOfBirth;
+      this.gender = gender;
       this.phone = phone;
       this.resetPasswordToken = resetPasswordToken;
       this.password = password;
@@ -101,5 +104,14 @@ public class User {
 
    public void setName(String name) {
       this.name = name;
+   }
+
+   @NotNull
+   public String getGender() {
+      return gender;
+   }
+
+   public void setGender(@NotNull String gender) {
+      this.gender = gender;
    }
 }

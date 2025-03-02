@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -28,7 +30,7 @@ import java.util.concurrent.Executors;
 public class RegisterActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword, editTextName, editTextPhone, editTextDate, editTextConfPass;
     private Button btnRegister;
-
+    private RadioGroup genderRadioGroup;
     private AppDatabase db;
     private UserDao userDao;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -46,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextPhone = findViewById(R.id.editTextPhone);
         editTextDate = findViewById(R.id.editTextDate);
         btnRegister = findViewById(R.id.buttonRegister);
+        genderRadioGroup = findViewById(R.id.genderRadioGroup);
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "users").build();
         userDao = db.userDao();
@@ -75,20 +78,20 @@ public class RegisterActivity extends AppCompatActivity {
                     ValidatorUtils.validatePassword(editTextPassword.getText().toString()), confirmPass);
             String phone = ValidatorUtils.validatePhone(editTextPhone.getText().toString());
             Date birthDate = DateFormatter.toDate(editTextDate.getText().toString());
+            String gender = checkGender();
 
             if (email.isEmpty() || password.isEmpty() || name.isEmpty() || phone.isEmpty()) {
                 throw new IllegalArgumentException("All fields must be filled.");
             }
 
             Account account = new Account();
-            User user = new User(email, account, birthDate, phone, "token", password, name);
+            User user = new User(email, account, birthDate, phone, gender, null, password, name);
 
             userDao.insert(user);
             return true;
 
         } catch (IllegalArgumentException e) {
             runOnUiThread(() -> showRetryDialog("Validation Error: " + e.getMessage()));
-
         } catch (Exception e) {
             runOnUiThread(() -> showRetryDialog("Registration failed: " + e.getMessage()));
         }
@@ -125,5 +128,13 @@ public class RegisterActivity extends AppCompatActivity {
             editTextPhone.setText("");
             editTextDate.setText("");
         });
+    }
+    private String checkGender() throws Exception{
+        int selectedId = genderRadioGroup.getCheckedRadioButtonId();
+        if (selectedId == -1){
+            throw new Exception("Please, select Gender");
+        }
+        RadioButton selectedRadioButton = findViewById(selectedId);
+        return selectedRadioButton.getText().toString();
     }
 }
