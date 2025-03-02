@@ -28,22 +28,27 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         boolean isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
 
-        if (isFirstRun){
+        if (isFirstRun) {
             sharedPreferences.edit().putBoolean("isFirstRun", false).apply();
             startActivity(new Intent(this, RegisterActivity.class));
-        }else {
-            binding = ActivityMainBinding.inflate(getLayoutInflater());
-            setContentView(binding.getRoot());
-
-            loadBottomNavigation();
-            loadFloatingCameraButton();
+            finish();
+            return;
         }
+        if (!isLoggedIn) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        finish();
+        loadBottomNavigation();
+        loadFloatingCameraButton();
     }
 
-    private void loadBottomNavigation(){
+    private void loadBottomNavigation() {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_clients_list, R.id.navigation_add_product, R.id.navigation_shopping_list, R.id.navigation_profile)
@@ -53,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
-    private void loadFloatingCameraButton(){
+    private void loadFloatingCameraButton() {
         FloatingActionButton fab = findViewById(R.id.fab_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
