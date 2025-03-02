@@ -154,7 +154,7 @@
             android:id="@+id/buttonRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="registerUser"
+            android:onClick="onRegisterClick"
             android:text="Register" />
 
         <TextView

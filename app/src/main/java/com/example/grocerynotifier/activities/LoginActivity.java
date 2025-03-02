@@ -42,10 +42,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(View view) {
         try {
-            String email = ValidatorUtils.validateEmail(editTextEmail.getText().toString(), userDao);
-            String password = ValidatorUtils.validatePassword(editTextPassword.getText().toString());
-
             new Thread(() -> {
+                String email = ValidatorUtils.validateEmail(editTextEmail.getText().toString(), userDao);
+                String password = ValidatorUtils.validatePassword(editTextPassword.getText().toString());
                 User user = userDao.getUserByEmail(email);
 
                 if (user != null && user.getPassword().equals(password)) {
