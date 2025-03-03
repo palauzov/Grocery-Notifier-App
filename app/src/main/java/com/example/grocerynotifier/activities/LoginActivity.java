@@ -1,6 +1,7 @@
 package com.example.grocerynotifier.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,17 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import com.example.grocerynotifier.R;
-import com.example.grocerynotifier.converters.ValidatorUtils;
 import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.daos.UserDao;
 import com.example.grocerynotifier.model.User;
 
-import java.util.concurrent.ExecutionException;
-
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
     private Button btnLogin;
-
     private AppDatabase db;
     private UserDao userDao;
 
@@ -41,28 +38,45 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(View view) {
-        try {
-            String email = ValidatorUtils.validateEmail(editTextEmail.getText().toString(), userDao);
-            String password = ValidatorUtils.validatePassword(editTextPassword.getText().toString());
+        String email = editTextEmail.getText().toString().trim();
+        String passwordInput = editTextPassword.getText().toString().trim();
 
-            new Thread(() -> {
+        if (email.isEmpty() || passwordInput.isEmpty()) {
+            showToast("Please fill in both email and password.");
+            return;
+        }
+
+        new Thread(() -> {
+            try {
                 User user = userDao.getUserByEmail(email);
 
-                if (user != null && user.getPassword().equals(password)) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
-                } else {
-                    runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Invalid email or password.", Toast.LENGTH_SHORT).show());
+                if (user == null || !user.getPassword().equals(passwordInput)) {
+                    runOnUiThread(() -> showToast("Invalid email or password."));
+                    return;
                 }
-            }).start();
 
-        } catch (IllegalArgumentException e) {
-            showToast(e.getMessage());
-        }
+                runOnUiThread(() -> {
+                    Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                    SharedPreferences sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    sharedPref.edit().putBoolean("isLoggedIn", true).apply();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                });
+
+            } catch (Exception e) {
+                runOnUiThread(() -> showToast("An error occurred: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+
+    public void toRegisterWindow(View view) {
+        startActivity(new Intent(this, RegisterActivity.class));
+    }
+
+    public void forgotPasswordProcess(View view) {
     }
 
     private void showToast(String message) {

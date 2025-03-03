@@ -33,20 +33,6 @@ public class ValidatorUtils {
         }
     }
 
-    public static String validateDate(String date) {
-        if (date == null) {
-            throw new IllegalArgumentException("Date cannot be null.");
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        sdf.setLenient(false);
-        try {
-            sdf.parse(date);
-            return date;
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Use dd-MM-yyyy.");
-        }
-    }
-
     public static String validatePassword(String password) {
         if (password == null) {
             throw new IllegalArgumentException("Password cannot be null.");
