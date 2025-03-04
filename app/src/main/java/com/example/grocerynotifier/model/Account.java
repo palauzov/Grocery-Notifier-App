@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.grocerynotifier.converters.JsonConverter;
+import com.example.grocerynotifier.utils.JsonConverter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,10 +22,9 @@ public class Account {
     private List<User> users;
     private List<Product>  products;
 
-    public Account(String id, List<Product> products, List<User> users, AccountType accountType) {
+    public Account(String id, List<Product> products, AccountType accountType) {
         this.id = id;
         this.products = products;
-        this.users = users;
         this.accountType = accountType;
     }
 
@@ -48,13 +47,6 @@ public class Account {
         this.products = products;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 
     public AccountType getAccountType() {
         return accountType;
