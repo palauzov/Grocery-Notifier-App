@@ -1,17 +1,18 @@
 package com.example.grocerynotifier.model;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.grocerynotifier.converters.DateFormatter;
-import com.example.grocerynotifier.converters.JsonConverter;
+import com.example.grocerynotifier.utils.DateFormatter;
+import com.example.grocerynotifier.utils.JsonConverter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
-@Entity(tableName = "users")
+@Entity(tableName = "users", foreignKeys = @ForeignKey(entity = Account.class, parentColumns = "id", childColumns = "accountId", onDelete = ForeignKey.CASCADE))
 @TypeConverters({JsonConverter.class, DateFormatter.class})
 public class User {
 
@@ -30,17 +31,20 @@ public class User {
    @NotNull
    private Date dateOfBirth;
    @NotNull
-   private Account account;
+   private String accountId;
+   @NotNull
+   boolean isActive;
 
-   public User(String email, Account account, Date dateOfBirth, String phone,String gender, String resetPasswordToken, String password, String name) {
+   public User(String email, String accountId, Date dateOfBirth, String phone,String gender, String resetPasswordToken, String password, String name, boolean isActive) {
       this.email = email;
-      this.account = account;
+      this.accountId = accountId;
       this.dateOfBirth = dateOfBirth;
       this.gender = gender;
       this.phone = phone;
       this.resetPasswordToken = resetPasswordToken;
       this.password = password;
       this.name = name;
+      this.isActive = isActive;
    }
 
    public User() {
@@ -52,15 +56,6 @@ public class User {
 
    public void setEmail(String email) {
       this.email = email;
-   }
-
-   @NotNull
-   public Account getAccount() {
-      return account;
-   }
-
-   public void setAccount(Account account) {
-      this.account = account;
    }
 
    @NotNull
@@ -113,5 +108,14 @@ public class User {
 
    public void setGender(@NotNull String gender) {
       this.gender = gender;
+   }
+
+   @NotNull
+   public String getAccountId() {
+      return accountId;
+   }
+
+   public void setAccountId(@NotNull String accountId) {
+      this.accountId = accountId;
    }
 }

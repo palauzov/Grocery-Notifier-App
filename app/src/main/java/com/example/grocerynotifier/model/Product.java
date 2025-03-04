@@ -1,16 +1,17 @@
 package com.example.grocerynotifier.model;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.grocerynotifier.converters.DateFormatter;
+import com.example.grocerynotifier.utils.DateFormatter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
-@Entity(tableName = "products")
+@Entity(tableName = "products", foreignKeys = @ForeignKey(entity = Account.class, parentColumns = "id", childColumns = "accountId", onDelete = ForeignKey.CASCADE))
 @TypeConverters(DateFormatter.class)
 public class Product {
     @PrimaryKey

@@ -16,8 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import com.example.grocerynotifier.R;
-import com.example.grocerynotifier.converters.DateFormatter;
-import com.example.grocerynotifier.converters.ValidatorUtils;
+import com.example.grocerynotifier.model.AccountType;
+import com.example.grocerynotifier.utils.DateFormatter;
+import com.example.grocerynotifier.utils.IdGenerator;
+import com.example.grocerynotifier.utils.ValidatorUtils;
 import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.daos.UserDao;
 import com.example.grocerynotifier.model.Account;
@@ -30,7 +32,7 @@ import java.util.concurrent.Executors;
 public class RegisterActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword, editTextName, editTextPhone, editTextDate, editTextConfPass;
     private Button btnRegister;
-    private RadioGroup genderRadioGroup;
+    private RadioGroup genderRadioGroup, radioGroupAccount;
     private AppDatabase db;
     private UserDao userDao;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -49,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextDate = findViewById(R.id.editTextDate);
         btnRegister = findViewById(R.id.buttonRegister);
         genderRadioGroup = findViewById(R.id.genderRadioGroup);
+        radioGroupAccount = findViewById(R.id.radioGroupAcc);
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "users").build();
         userDao = db.userDao();
@@ -84,8 +87,8 @@ public class RegisterActivity extends AppCompatActivity {
                 throw new IllegalArgumentException("All fields must be filled.");
             }
 
-            Account account = new Account();
-            User user = new User(email, account, birthDate, phone, gender, null, password, name);
+            Account account = checkAccount();
+            User user = new User(email, account.getId(), birthDate, phone, gender, null, password, name, false);
 
             userDao.insert(user);
             return true;
@@ -129,12 +132,32 @@ public class RegisterActivity extends AppCompatActivity {
             editTextDate.setText("");
         });
     }
-    private String checkGender() throws Exception{
+
+    private String checkGender() throws Exception {
         int selectedId = genderRadioGroup.getCheckedRadioButtonId();
-        if (selectedId == -1){
+        if (selectedId == -1) {
             throw new Exception("Please, select Gender");
         }
         RadioButton selectedRadioButton = findViewById(selectedId);
         return selectedRadioButton.getText().toString();
+    }
+
+    private Account checkAccount() throws Exception {
+        int selectedId = radioGroupAccount.getCheckedRadioButtonId();
+        if (selectedId == -1) {
+            throw new Exception("Please, choose type of account");
+        }
+        RadioButton selectedRadioButton = findViewById(selectedId);
+        switch (selectedRadioButton.getText().toString()) {
+            case "Single Account":
+                return new Account(IdGenerator.generateId(8), null, AccountType.SINGLE);
+            case "Roommate Account":
+                return new Account(IdGenerator.generateId(8), null, AccountType.ROOMMATES);
+            case "Family Account":
+                return new Account(IdGenerator.generateId(8), null, AccountType.FAMILY);
+            case "Join an existing Roommate/Family Account":
+                return new Account();
+        }
+        return null;
     }
 }

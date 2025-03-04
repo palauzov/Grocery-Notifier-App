@@ -1,4 +1,4 @@
-package com.example.grocerynotifier.converters;
+package com.example.grocerynotifier.utils;
 
 import androidx.room.TypeConverter;
 

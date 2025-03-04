@@ -1,14 +1,9 @@
-package com.example.grocerynotifier.converters;
+package com.example.grocerynotifier.utils;
 
 import android.util.Patterns;
 
-import androidx.room.Room;
-
-import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.daos.UserDao;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
 public class ValidatorUtils {
