@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/white_background"
-                android:hint="31/01/2025"
+                android:hint="Expiry date (31/01/2025)"
                 android:padding="15dp"
                 android:textColor="#000000"
                 android:textSize="16sp" />

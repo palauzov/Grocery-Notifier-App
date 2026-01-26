@@ -13,18 +13,14 @@ import java.util.List;
 @Entity(tableName = "accounts")
 @TypeConverters(JsonConverter.class)
 public class Account {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NotNull
     private String id;
     @NotNull
     private AccountType accountType;
-    @NotNull
-    private List<User> users;
-    private List<Product>  products;
 
-    public Account(String id, List<Product> products, AccountType accountType) {
+    public Account(String id, AccountType accountType) {
         this.id = id;
-        this.products = products;
         this.accountType = accountType;
     }
 
@@ -38,15 +34,6 @@ public class Account {
     public void setId(String id) {
         this.id = id;
     }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
 
     public AccountType getAccountType() {
         return accountType;

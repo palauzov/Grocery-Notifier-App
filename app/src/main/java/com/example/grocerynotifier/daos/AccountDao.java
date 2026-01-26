@@ -3,6 +3,7 @@ package com.example.grocerynotifier.daos;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.grocerynotifier.model.Account;
@@ -17,4 +18,7 @@ public interface AccountDao {
 
     @Delete
     void delete(Account account);
+
+    @Query("SELECT * FROM accounts WHERE id = :accountId LIMIT 1")
+    Account getAccountById(String accountId);
 }

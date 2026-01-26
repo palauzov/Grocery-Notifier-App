@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import com.example.grocerynotifier.R;
+import com.example.grocerynotifier.daos.AccountDao;
 import com.example.grocerynotifier.model.AccountType;
 import com.example.grocerynotifier.utils.DateFormatter;
 import com.example.grocerynotifier.utils.IdGenerator;
@@ -30,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText editTextEmail, editTextPassword, editTextName, editTextPhone, editTextDate, editTextConfPass;
+    private EditText editTextEmail, editTextPassword, editTextName, editTextPhone, editTextDate, editTextConfPass, editTextAccountCode;
     private Button btnRegister;
     private RadioGroup genderRadioGroup, radioGroupAccount;
     private AppDatabase db;
@@ -52,6 +54,37 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.buttonRegister);
         genderRadioGroup = findViewById(R.id.genderRadioGroup);
         radioGroupAccount = findViewById(R.id.radioGroupAcc);
+        editTextAccountCode = findViewById(R.id.editTextAccountCode);
+
+        TextView termsLink = findViewById(R.id.textViewTermsLink);
+
+        termsLink.setOnClickListener(v -> {
+            Intent intent = new Intent(RegisterActivity.this, TermsAndConditionsActivity.class);
+            startActivity(intent);
+        });
+
+        TextView loginText = findViewById(R.id.textViewTerms);
+
+        loginText.setOnClickListener(v -> {
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        radioGroupAccount.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton selected = findViewById(checkedId);
+
+            if (selected != null &&
+                    selected.getText().toString()
+                            .equals("Join an existing Roommate/Family Account")) {
+
+                editTextAccountCode.setVisibility(View.VISIBLE);
+
+            } else {
+                editTextAccountCode.setVisibility(View.GONE);
+                editTextAccountCode.setText("");
+            }
+        });
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "users").build();
         userDao = db.userDao();
@@ -143,21 +176,60 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private Account checkAccount() throws Exception {
+
         int selectedId = radioGroupAccount.getCheckedRadioButtonId();
         if (selectedId == -1) {
             throw new Exception("Please, choose type of account");
         }
+
         RadioButton selectedRadioButton = findViewById(selectedId);
-        switch (selectedRadioButton.getText().toString()) {
-            case "Single Account":
-                return new Account(IdGenerator.generateId(8), null, AccountType.SINGLE);
-            case "Roommate Account":
-                return new Account(IdGenerator.generateId(8), null, AccountType.ROOMMATES);
-            case "Family Account":
-                return new Account(IdGenerator.generateId(8), null, AccountType.FAMILY);
-            case "Join an existing Roommate/Family Account":
-                return new Account();
+        String choice = selectedRadioButton.getText().toString();
+
+        AccountDao accountDao = db.accountDao();
+
+        switch (choice) {
+
+            case "Single Account": {
+                Account acc = new Account(IdGenerator.generateId(8), AccountType.SINGLE);
+                accountDao.insert(acc);
+                return acc;
+            }
+
+            case "Roommate Account": {
+                Account acc = new Account(IdGenerator.generateId(8), AccountType.ROOMMATES);
+                accountDao.insert(acc);
+                return acc;
+            }
+
+            case "Family Account": {
+                Account acc = new Account(IdGenerator.generateId(8), AccountType.FAMILY);
+                accountDao.insert(acc);
+                return acc;
+            }
+
+            case "Join an existing Roommate/Family Account": {
+
+                String code = editTextAccountCode.getText().toString().trim();
+
+                if (code.length() != 8) {
+                    throw new Exception("Account code must be exactly 8 digits");
+                }
+
+                Account existing = accountDao.getAccountById(code);
+
+                if (existing == null) {
+                    throw new Exception("Account not found");
+                }
+
+                if (existing.getAccountType() == AccountType.SINGLE) {
+                    throw new Exception("Cannot join a Single Account");
+                }
+
+                return existing;
+            }
         }
-        return null;
+
+        throw new Exception("Invalid account selection");
     }
+
 }

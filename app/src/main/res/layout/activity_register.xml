@@ -134,6 +134,17 @@
                 android:text="Join an existing Roommate/Family Account" />
         </RadioGroup>
 
+        <EditText
+            android:id="@+id/editTextAccountCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter 8-digit account code"
+            android:inputType="number"
+            android:maxLength="8"
+            android:padding="12dp"
+            android:textColorHint="#666666"
+            android:visibility="gone" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -32,10 +32,10 @@ public class User {
    private Date dateOfBirth;
    @NotNull
    private String accountId;
-   @NotNull
-   boolean isActive;
 
-   public User(String email, String accountId, Date dateOfBirth, String phone,String gender, String resetPasswordToken, String password, String name, boolean isActive) {
+   private boolean active;
+
+    public User(String email, String accountId, Date dateOfBirth, String phone,String gender, String resetPasswordToken, String password, String name, boolean active) {
       this.email = email;
       this.accountId = accountId;
       this.dateOfBirth = dateOfBirth;
@@ -44,8 +44,8 @@ public class User {
       this.resetPasswordToken = resetPasswordToken;
       this.password = password;
       this.name = name;
-      this.isActive = isActive;
-   }
+      this.active = active;
+    }
 
    public User() {
    }
@@ -117,5 +117,13 @@ public class User {
 
    public void setAccountId(@NotNull String accountId) {
       this.accountId = accountId;
+   }
+
+   public void setActive(boolean active) {
+      this.active = active;
+   }
+
+   public boolean isActive() {
+      return active;
    }
 }
