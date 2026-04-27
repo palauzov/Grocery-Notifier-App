@@ -1,12 +1,14 @@
 package com.example.grocerynotifier.activities;
 
 import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.databinding.MyProductsBinding;
 import com.example.grocerynotifier.model.Product;
@@ -17,7 +19,7 @@ import java.util.concurrent.Executors;
 
 public class MyProductActivity extends AppCompatActivity {
 
-    private MyProductsBinding binding; // Use Binding instead of findViewById
+    private MyProductsBinding binding;
     private AppDatabase db;
     private ProductAdapter adapter;
 
@@ -25,12 +27,12 @@ public class MyProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Initialize ViewBinding
         binding = MyProductsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // 2. Setup RecyclerView (No findViewById needed!)
-        binding.recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewProducts.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
 
         db = AppDatabase.getInstance(this);
 
@@ -40,38 +42,62 @@ public class MyProductActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadProducts(); // Refresh list when returning from AddProductActivity
+        loadProducts();
     }
 
     private void loadProducts() {
+
         Executors.newSingleThreadExecutor().execute(() -> {
+
             SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
             String accountId = prefs.getString("accountId", null);
 
-            if (accountId != null) {
-                List<Product> productList = db.productDao().getProductsByAccount(accountId);
+            if (accountId == null) return;
 
-                runOnUiThread(() -> {
-                    if (productList.isEmpty()) {
-                        binding.tvEmptyMessage.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.tvEmptyMessage.setVisibility(View.GONE);
-                    }
+            List<Product> productList =
+                    db.productDao().getProductsByAccount(accountId);
 
-                    // Initialize Adapter with a delete listener
-                    adapter = new ProductAdapter(productList, product -> deleteProduct(product));
-                    binding.recyclerViewProducts.setAdapter(adapter);
-                });
-            }
+            runOnUiThread(() -> {
+
+                if (productList.isEmpty()) {
+                    binding.tvEmptyMessage.setVisibility(View.VISIBLE);
+                } else {
+                    binding.tvEmptyMessage.setVisibility(View.GONE);
+                }
+
+                adapter = new ProductAdapter(
+
+                        productList,
+
+                        // DELETE
+                        this::deleteProduct,
+
+                        // CLICK → OPEN DETAILS
+                        product -> {
+                            Intent i = new Intent(
+                                    MyProductActivity.this,
+                                    ProductDetailsActivity.class
+                            );
+                            i.putExtra("barcode", product.getBarcode());
+                            startActivity(i);
+                        }
+                );
+
+                binding.recyclerViewProducts.setAdapter(adapter);
+            });
         });
     }
 
     private void deleteProduct(Product product) {
         Executors.newSingleThreadExecutor().execute(() -> {
             db.productDao().delete(product);
+
             runOnUiThread(() -> {
-                Toast.makeText(this, "Product removed", Toast.LENGTH_SHORT).show();
-                loadProducts(); // Refresh the list
+                Toast.makeText(this,
+                        "Product removed",
+                        Toast.LENGTH_SHORT).show();
+
+                loadProducts();
             });
         });
     }

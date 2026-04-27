@@ -22,4 +22,7 @@ public interface ProductDao {
     void delete(Product product);
     @Query("SELECT * FROM products WHERE accountId = :accId ORDER BY expirationDate ASC")
     List<Product> getProductsByAccount(String accId);
+
+    @Query("SELECT * FROM products WHERE barcode = :barcode LIMIT 1")
+    Product getByBarcode(String barcode);
 }

@@ -31,6 +31,10 @@
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true" />
+        <activity android:name=".activities.TermsAndConditionsActivity" />
+        <activity android:name=".activities.PrivacyPolicyActivity" />
+        <activity android:name=".activities.ProductDetailsActivity" />
+        <activity android:name=".activities.AccountChangeActivity" />
     </application>
 
 </manifest>

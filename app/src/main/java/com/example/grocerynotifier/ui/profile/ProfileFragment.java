@@ -1,11 +1,11 @@
 package com.example.grocerynotifier.ui.profile;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +19,6 @@ import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.daos.UserDao;
 import com.example.grocerynotifier.databinding.ProfileBinding;
 import com.example.grocerynotifier.model.Account;
-import com.example.grocerynotifier.model.AccountType;
 import com.example.grocerynotifier.model.User;
 
 import java.util.List;
@@ -58,8 +57,14 @@ public class ProfileFragment extends Fragment {
         accountDao = db.accountDao();
 
         String email = requireActivity()
-                .getSharedPreferences("AppPrefs", 0)
+                .getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
                 .getString("email", null);
+
+        if (email == null) {
+            startActivity(new Intent(requireContext(), LoginActivity.class));
+            requireActivity().finish();
+            return;
+        }
 
         executorService.execute(() -> {
             currentUser = userDao.getUserByEmail(email);
@@ -71,12 +76,11 @@ public class ProfileFragment extends Fragment {
             requireActivity().runOnUiThread(this::populateUserInfo);
         });
 
-        setupAccountSpinner();
         setupClicks();
     }
 
     private void populateUserInfo() {
-        if (currentUser == null) return;
+        if (currentUser == null || currentAccount == null) return;
 
         binding.textViewName.setText("Name: " + currentUser.getName());
         binding.textViewEmail.setText("Email: " + currentUser.getEmail());
@@ -84,40 +88,13 @@ public class ProfileFragment extends Fragment {
         binding.textViewBirthDate.setText("Birth Date: " + currentUser.getDateOfBirth());
         binding.textViewGender.setText("Gender: " + currentUser.getGender());
 
-        if (currentAccount != null) {
-            binding.spinnerAccountType.setSelection(currentAccount.getAccountType().ordinal());
-        }
-    }
-
-    private void setupAccountSpinner() {
-        ArrayAdapter<AccountType> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                AccountType.values()
+        // READ ONLY ACCOUNT INFO
+        binding.textViewAccountType.setText(
+                "Account Type: " + currentAccount.getAccountType().name()
         );
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerAccountType.setAdapter(adapter);
-
-        binding.spinnerAccountType.setOnItemSelectedListener(
-                new android.widget.AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(android.widget.AdapterView<?> parent,
-                                               View view, int position, long id) {
-
-                        if (currentAccount == null) return;
-
-                        AccountType newType = AccountType.values()[position];
-
-                        executorService.execute(() -> {
-                            currentAccount.setAccountType(newType);
-                            accountDao.update(currentAccount);
-                        });
-                    }
-
-                    @Override
-                    public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-                }
+        binding.textViewAccountCode.setText(
+                "Account Code: " + currentAccount.getId()
         );
     }
 
@@ -142,6 +119,10 @@ public class ProfileFragment extends Fragment {
                 startActivity(new Intent(requireContext(), PrivacyPolicyActivity.class))
         );
 
+        binding.buttonChangeAccount.setOnClickListener(v -> {
+            showChangeAccountTypeDialog();
+        });
+
         binding.buttonLogout.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), LoginActivity.class));
             requireActivity().finish();
@@ -154,11 +135,11 @@ public class ProfileFragment extends Fragment {
         binding.layoutMembersContainer.removeAllViews();
 
         executorService.execute(() -> {
-            List<User> members =
+            List<com.example.grocerynotifier.model.User> members =
                     userDao.getUsersByAccountId(currentUser.getAccountId());
 
             requireActivity().runOnUiThread(() -> {
-                for (User member : members) {
+                for (com.example.grocerynotifier.model.User member : members) {
                     android.widget.TextView tv = new android.widget.TextView(requireContext());
                     tv.setText(member.getName());
                     tv.setPadding(8, 8, 8, 8);
@@ -172,5 +153,34 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void showChangeAccountTypeDialog() {
+
+        String[] types = {"SINGLE", "ROOMMATES", "FAMILY"};
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Change Account Type")
+                .setItems(types, (dialog, which) -> {
+
+                    if (currentAccount == null) return;
+
+                    com.example.grocerynotifier.model.AccountType selected =
+                            com.example.grocerynotifier.model.AccountType.valueOf(types[which]);
+
+                    currentAccount.setAccountType(selected);
+
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        accountDao.update(currentAccount);
+
+                        requireActivity().runOnUiThread(() -> {
+                            binding.textViewAccountType.setText(
+                                    "Account Type: " + selected.name()
+                            );
+                        });
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.grocerynotifier.ui.products;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.grocerynotifier.activities.ProductDetailsActivity;
 import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.databinding.MyProductsBinding;
 import com.example.grocerynotifier.model.Product;
@@ -71,9 +73,19 @@ public class ProductsFragment extends Fragment {
                             binding.tvEmptyMessage.setVisibility(View.GONE);
                         }
 
-                        // Setup Adapter
-                        adapter = new ProductAdapter(productList, product -> deleteProduct(product));
-                        binding.recyclerViewProducts.setAdapter(adapter);
+                        adapter = new ProductAdapter(
+                                productList,
+
+                                // DELETE
+                                product -> deleteProduct(product),
+
+                                // CLICK → open details
+                                product -> {
+                                    Intent i = new Intent(requireContext(), ProductDetailsActivity.class);
+                                    i.putExtra("barcode", product.getBarcode());
+                                    startActivity(i);
+                                }
+                        );  binding.recyclerViewProducts.setAdapter(adapter);
                     });
                 }
             }
