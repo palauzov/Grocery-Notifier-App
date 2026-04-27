@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewPrivacyTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Privacy Policy"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:id="@+id/textViewPrivacyContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Your privacy is important to us. We only collect the data necessary to provide our services. We do not share your personal information with third parties without your consent.\n\n1. **Information We Collect:** We collect your name, email, phone number, date of birth, gender, and account information when you register.\n\n2. **Use of Information:** Your information is used to personalize your experience, manage accounts, and provide notifications.\n\n3. **Data Security:** We store your data securely in our database. Please keep your password safe.\n\n4. **Sharing Data:** We do not share your data with external parties unless required by law or necessary for providing our services.\n\n5. **Cookies and Analytics:** We may use analytics tools to improve app functionality, but personal information is not tracked.\n\n6. **Your Rights:** You can request access, correction, or deletion of your personal information by contacting our support.\n\nBy using this app, you agree to this Privacy Policy."
+            android:paddingBottom="16dp" />
+
+        <Button
+            android:id="@+id/buttonBackPrivacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back" />
+
+    </LinearLayout>
+</ScrollView>

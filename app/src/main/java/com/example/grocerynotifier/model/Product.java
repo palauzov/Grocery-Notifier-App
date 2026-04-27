@@ -25,6 +25,9 @@ public class Product {
     private double price;
     private int weight;
 
+    @NotNull
+    private String accountId;
+
     public Product() {
     }
 
@@ -83,5 +86,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @NotNull
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(@NotNull String accountId) {
+        this.accountId = accountId;
     }
 }

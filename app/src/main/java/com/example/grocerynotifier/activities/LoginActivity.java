@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextLoginPassword);
         btnLogin = findViewById(R.id.buttonLogin);
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "users").build();
+        db = AppDatabase.getInstance(getApplicationContext());
         userDao = db.userDao();
 
         btnLogin.setOnClickListener(this::loginUser);
@@ -58,7 +58,11 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                     SharedPreferences sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                    sharedPref.edit().putBoolean("isLoggedIn", true).apply();
+                    sharedPref.edit()
+                            .putBoolean("isLoggedIn", true)
+                            .putString("email", user.getEmail())
+                            .putString("accountId", user.getAccountId())
+                            .apply();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

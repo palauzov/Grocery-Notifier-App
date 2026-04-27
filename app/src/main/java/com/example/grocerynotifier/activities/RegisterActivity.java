@@ -1,6 +1,7 @@
 package com.example.grocerynotifier.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -86,19 +87,38 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "users").build();
+        db = AppDatabase.getInstance(getApplicationContext());
         userDao = db.userDao();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onRegisterClick(View view) {
+
         executorService.execute(() -> {
-            boolean success = registerUser();
-            if (success) {
-                runOnUiThread(() -> {
-                    showToast("Registration successful!");
-                    navigateToLogin();
-                });
+
+            try {
+                boolean success = registerUser();
+
+                if (success) {
+
+                    Account account = checkAccount();
+
+                    SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit()
+                            .putString("accountId", account.getId())
+                            .putBoolean("isLoggedIn", true)
+                            .apply();
+
+                    runOnUiThread(() -> {
+                        showToast("Registration successful!");
+                        navigateToLogin();
+                    });
+                }
+
+            } catch (Exception e) {
+                runOnUiThread(() ->
+                        showToast("Error: " + e.getMessage())
+                );
             }
         });
     }

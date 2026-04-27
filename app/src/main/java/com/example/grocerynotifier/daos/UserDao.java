@@ -8,6 +8,7 @@ import androidx.room.Update;
 
 import com.example.grocerynotifier.model.User;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 @Dao
@@ -22,4 +23,7 @@ public interface UserDao {
     void delete(User user);
     @Query("SELECT * FROM users WHERE email = :inputEmail")
     User getUserByEmail(String inputEmail);
+
+    @Query("SELECT * FROM users WHERE accountId = :accountId")
+    List<User> getUsersByAccountId(String accountId);
 }
