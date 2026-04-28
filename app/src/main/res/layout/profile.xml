@@ -123,12 +123,6 @@
                 android:text="Account Code"
                 android:textSize="14sp"
                 android:paddingTop="4dp"/>
-            <Button
-                android:id="@+id/buttonChangeAccount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Change Account Type"
-                android:layout_marginTop="12dp"/>
         </LinearLayout>
 
         <!-- MEMBERS TOGGLE -->

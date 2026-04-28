@@ -119,10 +119,6 @@ public class ProfileFragment extends Fragment {
                 startActivity(new Intent(requireContext(), PrivacyPolicyActivity.class))
         );
 
-        binding.buttonChangeAccount.setOnClickListener(v -> {
-            showChangeAccountTypeDialog();
-        });
-
         binding.buttonLogout.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), LoginActivity.class));
             requireActivity().finish();
@@ -153,34 +149,5 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    private void showChangeAccountTypeDialog() {
-
-        String[] types = {"SINGLE", "ROOMMATES", "FAMILY"};
-
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setTitle("Change Account Type")
-                .setItems(types, (dialog, which) -> {
-
-                    if (currentAccount == null) return;
-
-                    com.example.grocerynotifier.model.AccountType selected =
-                            com.example.grocerynotifier.model.AccountType.valueOf(types[which]);
-
-                    currentAccount.setAccountType(selected);
-
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        accountDao.update(currentAccount);
-
-                        requireActivity().runOnUiThread(() -> {
-                            binding.textViewAccountType.setText(
-                                    "Account Type: " + selected.name()
-                            );
-                        });
-                    });
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
     }
 }
