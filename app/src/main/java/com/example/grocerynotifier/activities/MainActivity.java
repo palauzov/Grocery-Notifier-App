@@ -13,16 +13,22 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.grocerynotifier.databinding.ActivityMainBinding;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private FloatingActionButton fab; // declare as field
+    private FloatingActionButton fab;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,25 +44,37 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+
         if (!isLoggedIn) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        // Inflate view
+        scheduleDailyNotification();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Initialize FAB AFTER setContentView
         fab = findViewById(R.id.fab_button);
 
-        loadBottomNavigation();
-        loadFloatingCameraButton();
+        setupNavigation();
+        setupFab();
     }
 
-    private void loadBottomNavigation() {
+    // ✅ FIXED NAVIGATION
+    private void setupNavigation() {
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
+
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment_activity_main);
+
+        if (navHostFragment != null) {
+            navController = navHostFragment.getNavController();
+        }
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_clients_list,
                 R.id.navigation_add_product,
@@ -64,12 +82,17 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_profile
         ).build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(navView, navController);
     }
 
-    private void loadFloatingCameraButton() {
+    // OPTIONAL: toolbar back button support
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController.navigateUp() || super.onSupportNavigateUp();
+    }
+
+    private void setupFab() {
         fab.setOnClickListener(v -> {
             IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
             integrator.setPrompt("Scan a barcode");
@@ -85,23 +108,43 @@ public class MainActivity extends AppCompatActivity {
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
-            } else {
+        if (result != null && result.getContents() != null) {
 
-                String barcode = result.getContents();
+            String barcode = result.getContents();
+            Toast.makeText(this, "Scanned: " + barcode, Toast.LENGTH_LONG).show();
 
-                Toast.makeText(this, "Scanned: " + barcode, Toast.LENGTH_LONG).show();
+            Bundle bundle = new Bundle();
+            bundle.putString("barcode", barcode);
 
-                Bundle bundle = new Bundle();
-                bundle.putString("barcode", barcode);
-
-                NavController navController =
-                        Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-
-                navController.navigate(R.id.navigation_add_product, bundle);
-            }
+            navController.navigate(R.id.navigation_add_product, bundle);
+        } else {
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void scheduleDailyNotification() {
+
+        Calendar now = Calendar.getInstance();
+        Calendar target = Calendar.getInstance();
+
+        target.set(Calendar.HOUR_OF_DAY, 9);
+        target.set(Calendar.MINUTE, 0);
+        target.set(Calendar.SECOND, 0);
+
+        if (target.before(now)) {
+            target.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        long delay = target.getTimeInMillis() - now.getTimeInMillis();
+
+        PeriodicWorkRequest request =
+                new PeriodicWorkRequest.Builder(
+                        com.example.grocerynotifier.workers.ExpiryWorker.class,
+                        24, TimeUnit.HOURS
+                )
+                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                        .build();
+
+        WorkManager.getInstance(this).enqueue(request);
     }
 }

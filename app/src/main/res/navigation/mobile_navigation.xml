@@ -21,10 +21,19 @@
         android:id="@+id/navigation_shopping_list"
         android:name="com.example.grocerynotifier.ui.shoppingList.ShoppingListFragment"
         android:label="@string/title_shopping_list"
-        tools:layout="@layout/shopping_list" />
+        tools:layout="@layout/fragment_shopping_list" />
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.grocerynotifier.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_item_list" />
+    <fragment
+        android:id="@+id/shoppingListItemsFragment"
+        android:name="com.example.grocerynotifier.ui.shoppingList.ShopListItemsFragment"
+        android:label="Items">
+
+        <argument
+            android:name="listId"
+            app:argType="string" />
+    </fragment>
 </navigation>

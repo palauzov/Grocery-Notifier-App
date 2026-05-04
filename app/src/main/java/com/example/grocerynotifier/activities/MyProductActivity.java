@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.grocerynotifier.daos.AppDatabase;
 import com.example.grocerynotifier.databinding.MyProductsBinding;
 import com.example.grocerynotifier.model.Product;
-import com.example.grocerynotifier.utils.ProductAdapter;
+import com.example.grocerynotifier.adapters.ProductAdapter;
 
 import java.util.List;
 import java.util.concurrent.Executors;

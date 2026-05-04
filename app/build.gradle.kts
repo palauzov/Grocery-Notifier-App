@@ -52,6 +52,7 @@ dependencies {
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation ("com.google.zxing:core:3.5.1")
+    implementation("androidx.work:work-runtime:2.9.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

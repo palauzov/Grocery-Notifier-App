@@ -8,15 +8,19 @@ import androidx.room.RoomDatabase;
 
 import com.example.grocerynotifier.model.Account;
 import com.example.grocerynotifier.model.Product;
+import com.example.grocerynotifier.model.ShopItem;
+import com.example.grocerynotifier.model.ShopList;
 import com.example.grocerynotifier.model.User;
 
-@Database(entities = {User.class, Account.class, Product.class}, version = 1)
+@Database(entities = {User.class, Account.class, Product.class, ShopList.class, ShopItem.class}, version = 4)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
     public abstract UserDao userDao();
     public abstract AccountDao accountDao();
     public abstract ProductDao productDao();
+    public abstract ShopDao shopDao();
+
 
     public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null) {
